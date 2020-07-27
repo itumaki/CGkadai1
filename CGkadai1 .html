@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+< lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>これは課題です！</title>
+<!-- three.jsを読み込む(ローカル) -->
+ <script src="./three.js"></script> 
+<!-- three.jsを読み込む(CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.min.js"></script>
+</head>
+<script>
+// ページの読み込みを待つ
+window.addEventListener('load', init);
+
+function init() {
+  // サイズを指定
+  const width = 960;
+  const height = 540;
+
+  // レンダラーを作成
+  const renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector('#myCanvas')
+  });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(width, height);
+
+  // シーンを作成
+  const scene = new THREE.Scene();
+
+  // カメラを作成
+  const camera = new THREE.PerspectiveCamera(45, width / height);
+  camera.position.set(-100, 300, 700);
+  camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+  // 地面を作成
+  scene.add(new THREE.GridHelper(600));
+  scene.add(new THREE.AxesHelper(300));
+
+  // グループを作る
+  const group = new THREE.Group();
+  // 3D空間にグループを追加する
+  scene.add(group);
+
+  for (let i = 0; i < 5; i++) {
+    // 直方体を作成
+    const material = new THREE.MeshStandardMaterial({color: 0xFF0000});
+    const geometry = new THREE.SphereGeometry(50, 30, 30);
+    const mesh = new THREE.Mesh(geometry, material);
+
+    // 配置座標を計算
+    const radian = (i / 5) * Math.PI * 2;
+    mesh.position.set(
+      100 * Math.cos(radian), // X座標
+      50, // Y座標
+      300 * Math.sin(radian) // Z座標
+    );
+
+     // 平行光源
+ const directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+ directionalLight.position.set(1, 1, 1);
+
+ // シーンに追加
+ scene.add(directionalLight);
+
+ tick();
+
+
+    // グループに追加する
+    group.add(mesh);
+  }
+
+  tick();
+
+  // 毎フレーム時に実行される
+  function tick() {
+    group.rotation.y += 0.003;
+
+    // レンダリング
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+}
+</script>
+<body>
+<canvas id="myCanvas"></canvas>
+</body>
+
+</html>
